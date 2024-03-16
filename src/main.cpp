@@ -21,6 +21,10 @@ GxEPD2_BW<EPD_CLASS, EPD_CLASS::HEIGHT> display = EPD_CLASS(4, 2, 3, 1);
 GxEPD2_BW<EPD_CLASS, EPD_CLASS::HEIGHT> display = EPD_CLASS(5, 3, 2, 1);
 #endif
 
+typedef void (*MethodPtr)(String);
+
+MethodPtr methods[] = { nullptr, updateRow1, updateRow2, updateRow3 };
+
 WiFiClientSecure client;
 uint currentPrice = 0;
 String currentBlock = "";
@@ -89,93 +93,139 @@ void loop()
     }
   }
 
-  String block = String(getBlock());
 
-  uint tryCount = 0;
-  while (block.equals(""))
-  {
-    block = getBlock();
-    Serial.print("Retry block..");
-    tryCount++;
 
-    Serial.println(tryCount);
-    delay(1000);
-
-    if (tryCount % 5)
-    {
-      WiFi.disconnect();
-      WiFi.reconnect();
-
-      while (WiFi.status() != WL_CONNECTED)
-      {
-        Serial.print('.');
-        delay(1000);
+  for (uint i = 1; i <= 3; i++) {
+    String rowContent = "";
+    char keyName[5];
+    snprintf(keyName, sizeof(keyName), "row%d", i);
+    Serial.print(keyName);
+    Serial.print(" ");
+    Serial.println(preferences.getUInt(keyName));
+    switch (preferences.getUInt(keyName)) {
+      case LINE_BLOCKHEIGHT:
+        rowContent = getBlock();
+        break;
+      case LINE_MEMPOOL_FEES:
+        rowContent = getMempoolFees();
+        break;
+      case LINE_MEMPOOL_FEES_MEDIAN:
+        rowContent = "NOT IMPL";
+        break;
+      case LINE_HALVING_COUNTDOWN:
+        rowContent = "NOT IMPL";
+        break;
+      case LINE_SATSPERUNIT: {
+        uint satsPerDollar = int(round(1 / float(getPrice()) * 10e7));
+        rowContent = satsPerDollar;
+        break;
       }
+      case LINE_FIATPRICE:
+        rowContent = getPrice();
+        break;
+      case LINE_MARKETCAP:
+        rowContent = "NOT IMPL";
+        break;
+      case LINE_TIME:
+        rowContent = "NOT IMPL";
+        break;
+      case LINE_DATE:
+        rowContent = "NOT IMPL";
+        break;
+      default:
+        rowContent = "DEFAULT";
     }
+
+    methods[i](rowContent);
   }
 
-  uint price = getPrice();
-  tryCount = 0;
-  while (price == 0)
-  {
-    price = getPrice();
-    if (Serial.available())
-      Serial.print("Retry price..");
-    tryCount++;
-    if (Serial.available())
-      Serial.println(tryCount);
-    delay(1000);
-  }
+  // String block = String(getBlock());
 
-  uint satsPerDollar = int(round(1 / float(price) * 10e7));
+  // uint tryCount = 0;
+  // while (block.equals(""))
+  // {
+  //   block = getBlock();
+  //   Serial.print("Retry block..");
+  //   tryCount++;
 
-  String mempoolFees = getMempoolFees();
-  tryCount = 0;
-  while (mempoolFees.equals(""))
-  {
-    mempoolFees = getMempoolFees();
-    Serial.print("Retry mempoolfees..");
-    tryCount++;
+  //   Serial.println(tryCount);
+  //   delay(1000);
 
-    Serial.println(tryCount);
-    delay(1000);
-  }
+  //   if (tryCount % 5)
+  //   {
+  //     WiFi.disconnect();
+  //     WiFi.reconnect();
 
-  if (!currentFees.equals(mempoolFees))
-  {
-    updateRow1(mempoolFees);
-    currentFees = mempoolFees;
-    Serial.print(F("Fees is now "));
-    Serial.println(currentFees);
-  }
-  else
-  {
-    Serial.println(F("No need to update fees"));
-  }
+  //     while (WiFi.status() != WL_CONNECTED)
+  //     {
+  //       Serial.print('.');
+  //       delay(1000);
+  //     }
+  //   }
+  // }
 
-  if (price != currentPrice)
-  {
-    updateRow3(String(satsPerDollar));
-    currentPrice = price;
-    Serial.print(F("Price is now "));
-    Serial.println(currentPrice);
-  }
-  else
-  {
-    Serial.println(F("No need to update price"));
-  }
+  // uint price = getPrice();
+  // tryCount = 0;
+  // while (price == 0)
+  // {
+  //   price = getPrice();
+  //   if (Serial.available())
+  //     Serial.print("Retry price..");
+  //   tryCount++;
+  //   if (Serial.available())
+  //     Serial.println(tryCount);
+  //   delay(1000);
+  // }
 
-  if (!block.equals(currentBlock))
-  {
-    updateRow2(block);
-    currentBlock = block;
-    Serial.print(F("Block is now "));
-    Serial.println(currentBlock);
-  }
-  else
-  {
-    Serial.println(F("No need to update block"));
-  }
+  // uint satsPerDollar = int(round(1 / float(price) * 10e7));
+
+  // String mempoolFees = getMempoolFees();
+  // tryCount = 0;
+  // while (mempoolFees.equals(""))
+  // {
+  //   mempoolFees = getMempoolFees();
+  //   Serial.print("Retry mempoolfees..");
+  //   tryCount++;
+
+  //   Serial.println(tryCount);
+  //   delay(1000);
+  // }
+
+  // if (!currentFees.equals(mempoolFees))
+  // {
+  //   updateRow1(mempoolFees);
+  //   currentFees = mempoolFees;
+  //   Serial.print(F("Fees is now "));
+  //   Serial.println(currentFees);
+  // }
+  // else
+  // {
+  //   Serial.println(F("No need to update fees"));
+  // }
+
+  // if (price != currentPrice)
+  // {
+  //   updateRow3(String(satsPerDollar));
+  //   currentPrice = price;
+  //   Serial.print(F("Price is now "));
+  //   Serial.println(currentPrice);
+  // }
+  // else
+  // {
+  //   Serial.println(F("No need to update price"));
+  // }
+
+  // if (!block.equals(currentBlock))
+  // {
+  //   updateRow2(block);
+  //   currentBlock = block;
+  //   Serial.print(F("Block is now "));
+  //   Serial.println(currentBlock);
+  // }
+  // else
+  // {
+  //   Serial.println(F("No need to update block"));
+  // }
 
   // updateRows(mempoolFees, block, String(price));
 

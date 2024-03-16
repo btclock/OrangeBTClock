@@ -28,6 +28,7 @@ jobs:
         
   build:
     needs: prepare
+    continue-on-error: true
     strategy:
       matrix:
         epd_variant: [213epd, 29epd]

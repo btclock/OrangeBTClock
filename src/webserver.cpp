@@ -21,6 +21,7 @@ void setupWebserver()
   server.serveStatic("/build", LittleFS, "/build");
 
   server.on("/", HTTP_GET, onIndex);
+  server.onNotFound(onNotFound);
 
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods",
