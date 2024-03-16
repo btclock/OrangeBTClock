@@ -58,6 +58,7 @@ jobs:
       contents: write
       checks: write
     needs: build
+    steps:
       - name: Download matrix outputs
         uses: actions/download-artifact@v4
         with:
