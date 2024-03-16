@@ -23,7 +23,7 @@ GxEPD2_BW<EPD_CLASS, EPD_CLASS::HEIGHT> display = EPD_CLASS(5, 3, 2, 1);
 
 typedef void (*MethodPtr)(String);
 
-MethodPtr methods[] = { nullptr, updateRow1, updateRow2, updateRow3 };
+MethodPtr methods[] = {nullptr, updateRow1, updateRow2, updateRow3};
 
 WiFiClientSecure client;
 uint currentPrice = 0;
@@ -45,7 +45,7 @@ void setup()
   setupWifi();
   setupTime();
 
-  if (!inPowerSaveMode()) 
+  if (!inPowerSaveMode())
   {
     setupWebserver();
     setupOTA();
@@ -57,8 +57,8 @@ void setup()
 
 void loop()
 {
-  ArduinoOTA.handle();
-  if (isUpdating) {
+  if (isUpdating)
+  {
     return;
   }
 
@@ -93,47 +93,48 @@ void loop()
     }
   }
 
-
-
-  for (uint i = 1; i <= 3; i++) {
+  for (uint i = 1; i <= 3; i++)
+  {
     String rowContent = "";
     char keyName[5];
     snprintf(keyName, sizeof(keyName), "row%d", i);
     Serial.print(keyName);
     Serial.print(" ");
     Serial.println(preferences.getUInt(keyName));
-    switch (preferences.getUInt(keyName)) {
-      case LINE_BLOCKHEIGHT:
-        rowContent = getBlock();
-        break;
-      case LINE_MEMPOOL_FEES:
-        rowContent = getMempoolFees();
-        break;
-      case LINE_MEMPOOL_FEES_MEDIAN:
-        rowContent = "NOT IMPL";
-        break;
-      case LINE_HALVING_COUNTDOWN:
-        rowContent = "NOT IMPL";
-        break;
-      case LINE_SATSPERUNIT: {
-        uint satsPerDollar = int(round(1 / float(getPrice()) * 10e7));
-        rowContent = satsPerDollar;
-        break;
-      }
-      case LINE_FIATPRICE:
-        rowContent = getPrice();
-        break;
-      case LINE_MARKETCAP:
-        rowContent = "NOT IMPL";
-        break;
-      case LINE_TIME:
-        rowContent = "NOT IMPL";
-        break;
-      case LINE_DATE:
-        rowContent = "NOT IMPL";
-        break;
-      default:
-        rowContent = "DEFAULT";
+    switch (preferences.getUInt(keyName))
+    {
+    case LINE_BLOCKHEIGHT:
+      rowContent = getBlock();
+      break;
+    case LINE_MEMPOOL_FEES:
+      rowContent = getMempoolFees();
+      break;
+    case LINE_MEMPOOL_FEES_MEDIAN:
+      rowContent = "NOT IMPL";
+      break;
+    case LINE_HALVING_COUNTDOWN:
+      rowContent = "NOT IMPL";
+      break;
+    case LINE_SATSPERUNIT:
+    {
+      uint satsPerDollar = int(round(1 / float(getPrice()) * 10e7));
+      rowContent = satsPerDollar;
+      break;
+    }
+    case LINE_FIATPRICE:
+      rowContent = getPrice();
+      break;
+    case LINE_MARKETCAP:
+      rowContent = "NOT IMPL";
+      break;
+    case LINE_TIME:
+      rowContent = "NOT IMPL";
+      break;
+    case LINE_DATE:
+      rowContent = "NOT IMPL";
+      break;
+    default:
+      rowContent = "DEFAULT";
     }
 
     methods[i](rowContent);
@@ -231,17 +232,20 @@ void loop()
 
   delay(2 * 1000);
 
-  if (inPowerSaveMode()) {
+  if (inPowerSaveMode())
+  {
     display.hibernate();
     setModemSleep();
     esp_sleep_enable_timer_wakeup(50 * 1000000);
     esp_light_sleep_start();
     display.init(0, false);
     wakeModemSleep();
-  } else {
+  }
+  else
+  {
     Serial.println(F("Sleeping"));
     sleep(50);
-//    delay(50 * 1000);
+    //    delay(50 * 1000);
     Serial.println(F("Waking up"));
   }
 }

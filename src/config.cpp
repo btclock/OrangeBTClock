@@ -5,6 +5,7 @@ Preferences preferences;
 const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = 0;
 const int daylightOffset_sec = 3600;
+TaskHandle_t OTAHandle = NULL;
 
 #define STA_SSID ""
 #define STA_PASS ""
@@ -201,4 +202,22 @@ void setupOTA()
       else if (error == OTA_END_ERROR) Serial.println("End Failed"); });
 
   ArduinoOTA.begin();
+
+  xTaskCreatePinnedToCore(
+    OTAUpdateTask,     // Task function
+    "OTAUpdateTask",   // Task name
+    4096,              // Stack size
+    NULL,              // Task parameters
+    1,                 // Priority (higher value means higher priority)
+    &OTAHandle,        // Task handle
+    0                  // Core to run the task (0 or 1)
+  );
+}
+
+
+void OTAUpdateTask(void *pvParameters) {
+  for (;;) {
+    ArduinoOTA.handle(); // Handle OTA updates
+    vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay to avoid high CPU usage
+  }
 }

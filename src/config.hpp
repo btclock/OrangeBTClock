@@ -15,6 +15,8 @@ void setupTime();
 void setupPreferences();
 void setupWifi();
 void setupOTA();
+void OTAUpdateTask(void *pvParameters);
+
 void wakeModemSleep();
 void setModemSleep();
 
