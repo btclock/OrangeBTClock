@@ -2,7 +2,9 @@
 #include <LittleFS.h>
 
 AsyncWebServer server(80);
-String uintSettings[] = {SETTING_ROW1_CONTENT, SETTING_ROW2_CONTENT, SETTING_ROW3_CONTENT};
+const String uintSettings[] = {SETTING_ROW1_CONTENT, SETTING_ROW2_CONTENT, SETTING_ROW3_CONTENT};
+const String stringSettings[] = {SETTING_CURRENCY};
+const String boolSettings[] = {};
 
 void setupWebserver()
 {
@@ -36,6 +38,16 @@ void onApiSettingsGet(AsyncWebServerRequest *request)
     root[setting] = preferences.getUInt(setting.c_str());
   }
 
+  for (String setting : stringSettings)
+  {
+    root[setting] = preferences.getString(setting.c_str());
+  }
+
+  for (String setting : boolSettings)
+  {
+    root[setting] = preferences.getBool(setting.c_str());
+  }
+
   AsyncResponseStream *response =
       request->beginResponseStream("application/json");
   serializeJson(root, *response);
@@ -54,6 +66,26 @@ void onApiSettingsPatch(AsyncWebServerRequest *request, JsonVariant &json)
       preferences.putUInt(setting.c_str(), settings[setting].as<uint>());
       Serial.printf("Setting %s to %d\r\n", setting.c_str(),
                     settings[setting].as<uint>());
+    }
+  }
+
+  for (String setting : stringSettings)
+  {
+    if (settings.containsKey(setting))
+    {
+      preferences.putString(setting.c_str(), settings[setting].as<String>());
+      Serial.printf("Setting %s to %s\r\n", setting.c_str(),
+                    settings[setting].as<String>());
+    }
+  }
+
+  for (String setting : boolSettings)
+  {
+    if (settings.containsKey(setting))
+    {
+      preferences.putBool(setting.c_str(), settings[setting].as<boolean>());
+      Serial.printf("Setting %s to %d\r\n", setting.c_str(),
+                    settings[setting].as<boolean>());
     }
   }
 
