@@ -4,11 +4,11 @@ description: "Install and build"
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-        cache: yarn
-        cache-dependency-path: '**/yarn.lock'
+    # - uses: actions/setup-node@v4
+    #   with:
+    #     node-version: lts/*
+    #     cache: yarn
+    #     cache-dependency-path: '**/yarn.lock'
     - uses: actions/cache@v3
       with:
         path: |
