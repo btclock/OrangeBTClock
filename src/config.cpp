@@ -19,6 +19,24 @@ void setupTime()
 void setupPreferences()
 {
   preferences.begin("btclock", false);
+
+  if (!preferences.isKey(SETTING_ROW1_CONTENT))
+  {
+    preferences.putUInt(SETTING_ROW1_CONTENT, LINE_BLOCKHEIGHT);
+  }
+  if (!preferences.isKey(SETTING_ROW2_CONTENT))
+  {
+    preferences.putUInt(SETTING_ROW2_CONTENT, LINE_SATSPERUNIT);
+  }
+  if (!preferences.isKey(SETTING_ROW3_CONTENT))
+  {
+    preferences.putUInt(SETTING_ROW3_CONTENT, LINE_MEMPOOL_FEES);
+  }
+
+  if (!preferences.isKey(SETTING_CURRENCY))
+  {
+    preferences.putString(SETTING_CURRENCY, CURRENCY_USD);
+  }
 }
 
 void setupWifi()

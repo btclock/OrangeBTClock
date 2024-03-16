@@ -1,0 +1,71 @@
+name: BTClock CI
+
+on: 
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        epd_variant: [213epd, 29epd]
+        chip:
+          - name: lolin_s2_mini
+            version: esp32s2
+        # chips:
+        #   - name: lolin_s3_mini
+        #     version: esp32s3
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: "Install and build"
+        uses: ./.github/actions/install-build
+
+      - name: Install esptools.py
+        run: pip install --upgrade esptool
+
+      - name: Create merged firmware binary
+        run: mkdir -p ${{ matrix.chip.name }}_${{ matrix.epd_variant }} && esptool.py --chip ${{ matrix.chips.version }} merge_bin -o ${{ matrix.chip.name }}_${{ matrix.epd_variant }}/${{ matrix.chip.name }}_${{ matrix.epd_variant }}.bin --flash_mode dio 0x0000 .pio/build/${{ matrix.chip.name }}_${{ matrix.epd_variant }}/bootloader.bin 0x8000 .pio/build/${{ matrix.chip.name }}_${{ matrix.epd_variant }}/partitions.bin 0xe000 ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin 0x10000 .pio/build/${{ matrix.chip.name }}_${{ matrix.epd_variant }}/firmware.bin 0x369000 .pio/build/${{ matrix.chip.name }}_${{ matrix.epd_variant }}/littlefs.bin
+
+      - name: Create checksum for merged binary
+        run: shasum -a 256 ${{ matrix.chip.name }}_${{ matrix.epd_variant }}/${{ matrix.chip.name }}_${{ matrix.epd_variant }}.bin | awk '{print $1}' > $${{ matrix.chip.name }}_${{ matrix.epd_variant }}/${{ matrix.chip.name }}_${{ matrix.epd_variant }}.sha256
+
+      # - name: Write commit hash to file
+      #   run: echo $GITHUB_SHA > ${{ matrix.chip.name }}_${{ matrix.epd_variant }}/commit.txt
+
+      # - name: Write build date to file
+      #   run: echo "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > ${{ matrix.chip.name }}_${{ matrix.epd_variant }}/date.txt
+
+      # - name: Copy all artifacts to output folder
+      #   run: cp .pio/build/${{ matrix.chip.name }}_${{ matrix.epd_variant }}/*.bin ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin ${{ matrix.chip.name }}_${{ matrix.epd_variant }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ matrix.chip.name }}-${{ matrix.epd_variant }}
+          path: |
+            ${{ matrix.chip.name }}_${{ matrix.epd_variant }}/*.bin
+            ${{ matrix.chip.name }}_${{ matrix.epd_variant }}/*.sha256
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      checks: write
+    needs: build
+      - name: Download matrix outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: build-*
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*/*.bin,*/*.sha256"
+          allowUpdates: true
+          removeArtifacts: true
+          makeLatest: true

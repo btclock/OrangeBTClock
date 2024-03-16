@@ -6,6 +6,9 @@ const String mempoolPriceApiUrl = mempoolInstance + "/api/v1/prices";
 const String mempoolBlockApiUrl = mempoolInstance + "/api/blocks/tip/height";
 const String mempoolFeeApiUrl = mempoolInstance + "/api/v1/fees/recommended";
 
+uint lastPrice;
+uint lastBlock;
+
 uint getPrice()
 {
     HTTPClient http;
@@ -22,10 +25,10 @@ uint getPrice()
         String payload = http.getString();
         JsonDocument doc;
         deserializeJson(doc, payload);
-        usdPrice = doc["USD"].as<uint>();
-        eurPrice = doc["EUR"].as<uint>();
 
-        return usdPrice;
+        lastPrice = doc[preferences.getString(SETTING_CURRENCY)].as<uint>();
+
+        return lastPrice;
     }
     else
     {
@@ -36,7 +39,7 @@ uint getPrice()
     return 0;
 }
 
-String getBlock()
+uint getBlock()
 {
     HTTPClient http;
 
@@ -49,9 +52,10 @@ String getBlock()
     uint usdPrice, eurPrice;
     if (httpCode == 200)
     {
-        String payload = http.getString();
+        uint payload = http.getString().toInt();
 
-        return payload;
+        lastBlock = payload;
+        return lastBlock;
     }
     else
     {
@@ -59,7 +63,7 @@ String getBlock()
     }
     http.end();
 
-    return "";
+    return 0;
 }
 
 String getMempoolFees()

@@ -8,5 +8,5 @@
 #include "shared.hpp"
 
 uint getPrice();
-String getBlock();
+uint getBlock();
 String getMempoolFees();

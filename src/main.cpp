@@ -89,7 +89,7 @@ void loop()
     }
   }
 
-  String block = getBlock();
+  String block = String(getBlock());
 
   uint tryCount = 0;
   while (block.equals(""))

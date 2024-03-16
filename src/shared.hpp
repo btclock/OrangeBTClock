@@ -56,13 +56,28 @@
 #define ICON_CHECK "Q"
 #define ICON_WARNING "R"
 
+#define SETTING_ROW1_CONTENT "row1"
+#define SETTING_ROW2_CONTENT "row2"
+#define SETTING_ROW3_CONTENT "row3"
+#define SETTING_CURRENCY "currency"
+
 const int LINE_BLOCKHEIGHT = 0;
-const int LINE_HALVING_COUNTDOWN = 1;
-const int LINE_SATSPERDOLLAR = 2;
-const int LINE_FIATPRICE = 3;
-const int LINE_MEMPOOL_FEES = 4;
-const int LINE_TIME = 5;
-const int LINE_DATE = 6;
+const int LINE_MEMPOOL_FEES = 1;
+const int LINE_MEMPOOL_FEES_MEDIAN = 2;
+const int LINE_HALVING_COUNTDOWN = 10;
+const int LINE_SATSPERUNIT = 20;
+const int LINE_FIATPRICE = 30;
+const int LINE_MARKETCAP = 40;
+const int LINE_TIME = 99;
+const int LINE_DATE = 100;
+
+#define CURRENCY_USD "USD"
+#define CURRENCY_EUR "EUR"
+#define CURRENCY_GBP "GBP"
+#define CURRENCY_CAD "CAD"
+#define CURRENCY_CHF "CHF"
+#define CURRENCY_AUD "AUD"
+#define CURRENCY_JPY "JPY"
 
 extern WiFiClientSecure client;
 extern GxEPD2_BW<EPD_CLASS, EPD_CLASS::HEIGHT> display;
