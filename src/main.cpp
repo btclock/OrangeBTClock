@@ -53,8 +53,8 @@ void setup()
 
 void loop()
 {
+  ArduinoOTA.handle();
   if (isUpdating) {
-    ArduinoOTA.handle();
     return;
   }
 

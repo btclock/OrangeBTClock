@@ -34,9 +34,8 @@ jobs:
         chip:
           - name: lolin_s2_mini
             version: esp32s2
-        # chips:
-        #   - name: lolin_s3_mini
-        #     version: esp32s3
+          - name: lolin_s3_mini
+            version: esp32s3
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -80,7 +79,8 @@ jobs:
       - name: Download matrix outputs
         uses: actions/download-artifact@v4
         with:
-          name: build-*
+          pattern: build-*
+          merge-multiple: true
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
