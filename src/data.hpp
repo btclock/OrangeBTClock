@@ -10,3 +10,5 @@
 uint getPrice();
 uint getBlock();
 String getMempoolFees();
+double getSupplyAtBlock(std::uint32_t blockNr);
+String formatNumberWithSuffix(std::uint64_t num, int numCharacters);

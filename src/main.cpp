@@ -114,9 +114,12 @@ void loop()
       rowContent = "NOT IMPL";
       break;
     case LINE_HALVING_COUNTDOWN:
+    {
       icon = ICON_HOURGLASS;
-      rowContent = "NOT IMPL";
+      uint currentBlock = getBlock();
+      rowContent = 210000 - (currentBlock % 210000);
       break;
+    }
     case LINE_SATSPERUNIT:
     {
       icon = ICON_SATS;
@@ -125,19 +128,32 @@ void loop()
       break;
     }
     case LINE_FIATPRICE:
-      icon = ICON_DOLLAR;
+      icon = getCurrencyIcon();
       rowContent = getPrice();
       break;
     case LINE_MARKETCAP:
-      icon = ICON_GLOBE;
-      rowContent = "NOT IMPL";
+    {
+      icon = getCurrencyIcon();
+      int64_t marketCap = static_cast<std::int64_t>(getSupplyAtBlock(getBlock()) * double(getPrice()));
+      rowContent = String(formatNumberWithSuffix(marketCap, 4));
       break;
+    }
     case LINE_TIME:
-      rowContent = "NOT IMPL";
+    {
+      icon = ICON_GLOBE;
+      char dateString[10];
+      strftime(dateString, 10, "%H:%M:%S", &timeinfo);
+      rowContent = dateString;
       break;
+    }
     case LINE_DATE:
-      rowContent = "NOT IMPL";
+    {
+      icon = ICON_GLOBE;
+      char dateString[10];
+      strftime(dateString, 10, "%x", &timeinfo);
+      rowContent = dateString;
       break;
+    }
     default:
       rowContent = "DEFAULT";
     }

@@ -43,6 +43,11 @@ void setupPreferences()
   {
     preferences.putString(SETTING_HOSTNAME_PREFIX, "oc");
   }
+
+  if (!preferences.isKey(SETTING_MEMPOOL_INSTANCE))
+  {
+    preferences.putString(SETTING_MEMPOOL_INSTANCE, "https://mempool.space");
+  }
 }
 
 void setupWifi()
@@ -227,3 +232,22 @@ void OTAUpdateTask(void *pvParameters) {
   }
 }
 
+char getCurrencyIcon() {
+  char ret;
+  const char* currency = preferences.getString(SETTING_CURRENCY).c_str();
+  if (strcmp(currency, CURRENCY_USD) == 0) {
+      ret = ICON_DOLLAR;
+  } else if(strcmp(currency, CURRENCY_EUR) == 0) {
+      ret = ICON_EURO;
+  }
+  //     break;
+  //   case CURRENCY_GBP:
+  //     ret = ICON_POUND;
+  //     break;
+  //   case CURRENCY_JPY:
+  //     ret = ICON_YEN;
+  //     break;
+  // }
+
+  return ret;
+}

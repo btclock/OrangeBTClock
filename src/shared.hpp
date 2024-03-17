@@ -26,13 +26,13 @@
   #define EPD_CLASS GxEPD2_290_T94
   #define ROW1_FONT LibreFranklin_SemiBold15pt7b
   #define ROW1_ICONFONT orangeclock_icons14pt7b
-  #define ROW1_ICONWIDTH 27
+  #define ROW1_ICONWIDTH 29
   #define ROW2_FONT LibreFranklin_Bold25pt7b
   #define ROW2_ICONFONT orangeclock_icons25pt7b
   #define ROW2_ICONWIDTH 52
   #define ROW3_FONT LibreFranklin_SemiBold15pt7b
   #define ROW3_ICONFONT orangeclock_icons14pt7b
-  #define ROW3_ICONWIDTH 27
+  #define ROW3_ICONWIDTH 29
 
  #define SETUPFONT LibreFranklin_SemiBold12pt7b
 #endif
@@ -61,6 +61,7 @@
 #define SETTING_ROW3_CONTENT "row3"
 #define SETTING_CURRENCY "currency"
 #define SETTING_HOSTNAME_PREFIX "hostnamePrefix"
+#define SETTING_MEMPOOL_INSTANCE "mempoolInstance"
 
 const int LINE_BLOCKHEIGHT = 0;
 const int LINE_MEMPOOL_FEES = 1;

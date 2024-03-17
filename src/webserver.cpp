@@ -3,7 +3,7 @@
 
 AsyncWebServer server(80);
 const String uintSettings[] = {SETTING_ROW1_CONTENT, SETTING_ROW2_CONTENT, SETTING_ROW3_CONTENT};
-const String stringSettings[] = {SETTING_CURRENCY};
+const String stringSettings[] = {SETTING_CURRENCY,SETTING_MEMPOOL_INSTANCE};
 const String boolSettings[] = {};
 
 void setupWebserver()
@@ -15,6 +15,9 @@ void setupWebserver()
 
   server.on("/api/status", HTTP_GET, onApiStatus);
   server.on("/api/settings", HTTP_GET, onApiSettingsGet);
+  server.on("/api/restart", HTTP_GET, onApiRestart);
+  server.on("/api/full_refresh", HTTP_GET, onApiFullRefresh);
+
   AsyncCallbackJsonWebHandler *settingsPatchHandler =
       new AsyncCallbackJsonWebHandler("/api/json/settings", onApiSettingsPatch);
   server.addHandler(settingsPatchHandler);
@@ -149,4 +152,22 @@ void onNotFound(AsyncWebServerRequest *request)
     // Serial.printf("NotFound, Return[%d]\n", 404);
     request->send(404);
   }
+}
+
+void onApiRestart(AsyncWebServerRequest *request) {
+  request->send(200);
+
+  delay(500);
+
+  esp_restart();
+}
+
+/**
+ * @Api
+ * @Path("/api/full_refresh")
+ */
+void onApiFullRefresh(AsyncWebServerRequest *request) {
+  display.refresh();
+
+  request->send(200);
 }

@@ -21,3 +21,4 @@ void wakeModemSleep();
 void setModemSleep();
 
 bool inPowerSaveMode();
+char getCurrencyIcon();

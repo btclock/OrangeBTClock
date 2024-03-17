@@ -13,6 +13,8 @@ void onApiStatus(AsyncWebServerRequest *request);
 
 void onApiSettingsGet(AsyncWebServerRequest *request);
 void onApiSettingsPatch(AsyncWebServerRequest *request, JsonVariant &json);
+void onApiFullRefresh(AsyncWebServerRequest *request);
+void onApiRestart(AsyncWebServerRequest *request);
 
 void onIndex(AsyncWebServerRequest *request);
 void onNotFound(AsyncWebServerRequest *request);
