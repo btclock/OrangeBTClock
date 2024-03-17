@@ -31,7 +31,6 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        epd_variant: [213epd, 29epd]
         chip:
           - name: lolin_s2_mini
             version: esp32s2
@@ -39,6 +38,7 @@ jobs:
             version: esp32s3
           - name: orangeclock
             version: esp32s3 
+        epd_variant: [213epd, 29epd]
         exclude:
           - chip: orangeclock
             epd_variant: 213epd
