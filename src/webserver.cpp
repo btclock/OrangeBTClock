@@ -25,6 +25,7 @@ void setupWebserver()
   server.addHandler(settingsPatchHandler);
 
   server.serveStatic("/build", LittleFS, "/build");
+  server.serveStatic("/fonts", LittleFS, "/fonts");
 
   server.on("/", HTTP_GET, onIndex);
   server.onNotFound(onNotFound);

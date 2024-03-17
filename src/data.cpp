@@ -5,6 +5,7 @@
 const String mempoolPriceApi = "/api/v1/prices";
 const String mempoolBlockApi = "/api/blocks/tip/height";
 const String mempoolFeeApi = "/api/v1/fees/recommended";
+const String mempoolMedianFeeApi = "/api/v1/fees/mempool-blocks";
 
 uint lastPrice;
 uint lastBlock;
@@ -95,6 +96,37 @@ String getMempoolFees()
     http.end();
 
     return "";
+}
+
+uint getMempoolFeesMedian()
+{
+    HTTPClient http;
+
+    // Send HTTP request to CoinGecko API
+    http.begin(preferences.getString(SETTING_MEMPOOL_INSTANCE) + mempoolMedianFeeApi);
+
+    int httpCode = http.GET();
+
+    if (httpCode == 200)
+    {
+        char feeString[20];
+        String payload = http.getString();
+        JsonDocument doc;
+        deserializeJson(doc, payload);
+
+        snprintf(feeString, 20, "L: %d M: %d H: %d", doc["hourFee"].as<uint>(), doc["halfHourFee"].as<uint>(), doc["fastestFee"].as<uint>());
+
+        return round(doc[0]["medianFee"].as<double>());
+
+        // preferences.putUInt("lastPrice", eurPrice);
+    }
+    else
+    {
+        Serial.printf("HTTP GET request mempool median fees failed with error: %s\n", http.errorToString(httpCode).c_str());
+    }
+    http.end();
+
+    return 0;
 }
 
 double getSupplyAtBlock(std::uint32_t blockNr)

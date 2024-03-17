@@ -265,23 +265,23 @@ void OTAUpdateTask(void *pvParameters)
 char getCurrencyIcon()
 {
   char ret;
-  const char *currency = preferences.getString(SETTING_CURRENCY).c_str();
-  if (strcmp(currency, CURRENCY_USD) == 0)
+  String currency = preferences.getString(SETTING_CURRENCY);
+  if (currency.equals(CURRENCY_USD))
   {
     ret = ICON_DOLLAR;
   }
-  else if (strcmp(currency, CURRENCY_EUR) == 0)
+  else if (currency.equals(CURRENCY_EUR))
   {
     ret = ICON_EURO;
   }
-  //     break;
-  //   case CURRENCY_GBP:
-  //     ret = ICON_POUND;
-  //     break;
-  //   case CURRENCY_JPY:
-  //     ret = ICON_YEN;
-  //     break;
-  // }
+  else if (currency.equals(CURRENCY_GBP))
+  {
+    ret = ICON_POUND;
+  }
+  else if (currency.equals(CURRENCY_JPY))
+  {
+    ret = ICON_YEN;
+  }
 
   return ret;
 }

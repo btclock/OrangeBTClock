@@ -112,7 +112,7 @@ void loop()
       break;
     case LINE_MEMPOOL_FEES_MEDIAN:
       icon = ICON_PIE;
-      rowContent = "NOT IMPL";
+      rowContent = getMempoolFeesMedian();
       break;
     case LINE_HALVING_COUNTDOWN:
     {
