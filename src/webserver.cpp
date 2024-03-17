@@ -3,8 +3,10 @@
 
 AsyncWebServer server(80);
 const String uintSettings[] = {SETTING_ROW1_CONTENT, SETTING_ROW2_CONTENT, SETTING_ROW3_CONTENT};
-const String stringSettings[] = {SETTING_CURRENCY,SETTING_MEMPOOL_INSTANCE};
-const String boolSettings[] = {};
+const String intSettings[] = {SETTING_TIME_OFFSET_MIN};
+const String stringSettings[] = {SETTING_CURRENCY, SETTING_MEMPOOL_INSTANCE, SETTING_TIME_FORMAT, SETTING_DATE_FORMAT};
+const String charSettings[] = {SETTING_DECIMAL_SEPARATOR};
+const String boolSettings[] = {SETTING_POWER_SAVE_MODE};
 
 void setupWebserver()
 {
@@ -68,9 +70,19 @@ void onApiSettingsGet(AsyncWebServerRequest *request)
     root[setting] = preferences.getUInt(setting.c_str());
   }
 
+  for (String setting : intSettings)
+  {
+    root[setting] = preferences.getInt(setting.c_str());
+  }
+
   for (String setting : stringSettings)
   {
     root[setting] = preferences.getString(setting.c_str());
+  }
+
+  for (String setting : charSettings)
+  {
+    root[setting] = preferences.getChar(setting.c_str());
   }
 
   for (String setting : boolSettings)
@@ -110,11 +122,31 @@ void onApiSettingsPatch(AsyncWebServerRequest *request, JsonVariant &json)
     }
   }
 
+  for (String setting : intSettings)
+  {
+    if (settings.containsKey(setting))
+    {
+      preferences.putInt(setting.c_str(), settings[setting].as<int>());
+      Serial.printf("Setting %s to %d\r\n", setting.c_str(),
+                    settings[setting].as<uint>());
+    }
+  }
+
   for (String setting : stringSettings)
   {
     if (settings.containsKey(setting))
     {
       preferences.putString(setting.c_str(), settings[setting].as<String>());
+      Serial.printf("Setting %s to %s\r\n", setting.c_str(),
+                    settings[setting].as<String>());
+    }
+  }
+
+  for (String setting : charSettings)
+  {
+    if (settings.containsKey(setting))
+    {
+      preferences.putChar(setting.c_str(), settings[setting].as<char>());
       Serial.printf("Setting %s to %s\r\n", setting.c_str(),
                     settings[setting].as<String>());
     }

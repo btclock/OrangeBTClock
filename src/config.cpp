@@ -3,7 +3,7 @@
 Preferences preferences;
 
 const char *ntpServer = "pool.ntp.org";
-const long gmtOffset_sec = 0;
+// const long gmtOffset_sec = 0;
 const int daylightOffset_sec = 3600;
 TaskHandle_t OTAHandle = NULL;
 
@@ -14,7 +14,7 @@ bool isUpdating = false;
 
 void setupTime()
 {
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  configTime(preferences.getInt(SETTING_TIME_OFFSET_MIN), daylightOffset_sec, ntpServer);
 }
 
 void setupPreferences()
@@ -48,10 +48,44 @@ void setupPreferences()
   {
     preferences.putString(SETTING_MEMPOOL_INSTANCE, "https://mempool.space");
   }
+
+  if (!preferences.isKey(SETTING_TIME_FORMAT))
+  {
+    preferences.putString(SETTING_TIME_FORMAT, "%H:%M:%S");
+  }
+
+  if (!preferences.isKey(SETTING_DATE_FORMAT))
+  {
+    preferences.putString(SETTING_DATE_FORMAT, "%d-%m-%Y");
+  }
+
+  if (!preferences.isKey(SETTING_DECIMAL_SEPARATOR))
+  {
+    preferences.putChar(SETTING_DECIMAL_SEPARATOR, '.');
+  }
+
+  if (!preferences.isKey(SETTING_POWER_SAVE_MODE))
+  {
+    preferences.putBool(SETTING_POWER_SAVE_MODE, false);
+  }
+
+  if (!preferences.isKey(SETTING_TIME_OFFSET_MIN))
+  {
+    preferences.putInt(SETTING_TIME_OFFSET_MIN, 0);
+  }
 }
 
 void setupWifi()
 {
+  uint8_t mac[6];
+  WiFi.macAddress(mac);
+  unsigned long seed = 0;
+  for (int i = 0; i < 6; i++)
+  {
+    seed += (unsigned long)mac[i] << ((i & 1) * 8);
+  }
+  randomSeed(seed);
+
   //  WiFi.begin(, ");
   WiFi.setAutoConnect(true);
   WiFi.setAutoReconnect(true);
@@ -75,15 +109,10 @@ void setupWifi()
     }
   }
 
-  byte mac[6];
-  WiFi.macAddress(mac);
   String softAP_SSID =
       String("OrangeBTClock");
   WiFi.setHostname(softAP_SSID.c_str());
-  String softAP_password =
-      base64::encode(String(mac[2], 16) + String(mac[4], 16) +
-                     String(mac[5], 16) + String(mac[1], 16))
-          .substring(2, 10);
+  String softAP_password = getAPPassword();
 
   // wm.setConfigPortalTimeout(preferences.getUInt("wpTimeout", 600));
   wm.setWiFiAutoReconnect(false);
@@ -214,31 +243,36 @@ void setupOTA()
   ArduinoOTA.begin();
 
   xTaskCreatePinnedToCore(
-    OTAUpdateTask,     // Task function
-    "OTAUpdateTask",   // Task name
-    4096,              // Stack size
-    NULL,              // Task parameters
-    1,                 // Priority (higher value means higher priority)
-    &OTAHandle,        // Task handle
-    0                  // Core to run the task (0 or 1)
+      OTAUpdateTask,   // Task function
+      "OTAUpdateTask", // Task name
+      4096,            // Stack size
+      NULL,            // Task parameters
+      1,               // Priority (higher value means higher priority)
+      &OTAHandle,      // Task handle
+      0                // Core to run the task (0 or 1)
   );
 }
 
-
-void OTAUpdateTask(void *pvParameters) {
-  for (;;) {
-    ArduinoOTA.handle(); // Handle OTA updates
+void OTAUpdateTask(void *pvParameters)
+{
+  for (;;)
+  {
+    ArduinoOTA.handle();                   // Handle OTA updates
     vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay to avoid high CPU usage
   }
 }
 
-char getCurrencyIcon() {
+char getCurrencyIcon()
+{
   char ret;
-  const char* currency = preferences.getString(SETTING_CURRENCY).c_str();
-  if (strcmp(currency, CURRENCY_USD) == 0) {
-      ret = ICON_DOLLAR;
-  } else if(strcmp(currency, CURRENCY_EUR) == 0) {
-      ret = ICON_EURO;
+  const char *currency = preferences.getString(SETTING_CURRENCY).c_str();
+  if (strcmp(currency, CURRENCY_USD) == 0)
+  {
+    ret = ICON_DOLLAR;
+  }
+  else if (strcmp(currency, CURRENCY_EUR) == 0)
+  {
+    ret = ICON_EURO;
   }
   //     break;
   //   case CURRENCY_GBP:

@@ -59,6 +59,7 @@ void loop()
 {
   if (isUpdating)
   {
+    delay(1000);
     return;
   }
 
@@ -135,22 +136,22 @@ void loop()
     {
       icon = getCurrencyIcon();
       int64_t marketCap = static_cast<std::int64_t>(getSupplyAtBlock(getBlock()) * double(getPrice()));
-      rowContent = String(formatNumberWithSuffix(marketCap, 4));
+      rowContent = String(formatNumberWithSuffix(marketCap, 8));
       break;
     }
     case LINE_TIME:
     {
       icon = ICON_GLOBE;
-      char dateString[10];
-      strftime(dateString, 10, "%H:%M:%S", &timeinfo);
+      char dateString[16];
+      strftime(dateString, sizeof(dateString), preferences.getString(SETTING_TIME_FORMAT).c_str(), &timeinfo);
       rowContent = dateString;
       break;
     }
     case LINE_DATE:
     {
       icon = ICON_GLOBE;
-      char dateString[10];
-      strftime(dateString, 10, "%x", &timeinfo);
+      char dateString[16];
+      strftime(dateString, sizeof(dateString), preferences.getString(SETTING_DATE_FORMAT).c_str(), &timeinfo);
       rowContent = dateString;
       break;
     }

@@ -5,6 +5,7 @@
 #include <Preferences.h>
 #include <GxEPD2.h>
 #include <GxEPD2_BW.h>
+#include "utils.hpp"
 #include "fonts/fonts.hpp"
 
 #ifdef VERSION_EPD_2_13
@@ -62,6 +63,12 @@
 #define SETTING_CURRENCY "currency"
 #define SETTING_HOSTNAME_PREFIX "hostnamePrefix"
 #define SETTING_MEMPOOL_INSTANCE "mempoolInstance"
+#define SETTING_POWER_SAVE_MODE "powerSaveMode"
+#define SETTING_TIME_OFFSET_MIN "timeOffsetMin"
+#define SETTING_DECIMAL_SEPARATOR "decSeparator"
+#define SETTING_TIME_FORMAT "timeFormat"
+#define SETTING_DATE_FORMAT "dateFormat"
+
 
 const int LINE_BLOCKHEIGHT = 0;
 const int LINE_MEMPOOL_FEES = 1;
@@ -94,4 +101,3 @@ extern char currentIcon1;
 extern char currentIcon2;
 extern char currentIcon3;
 
-String getMyHostname();
