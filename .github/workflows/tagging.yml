@@ -37,6 +37,11 @@ jobs:
             version: esp32s2
           - name: lolin_s3_mini
             version: esp32s3
+          - name: orangeclock
+            version: esp32s3 
+        exclude:
+          - chip: orangeclock
+            epd_variant: 213epd
     runs-on: ubuntu-latest
     permissions:
       contents: write

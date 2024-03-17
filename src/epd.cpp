@@ -51,7 +51,7 @@ void setupDisplay()
   //  display.fillRect(0, row1, display.width(), 54, GxEPD_BLACK);
   display.displayWindow(0, row1, display.width(), row2);
 
-  display.display(true);
+  display.display(false);
 
   // display.fillRect(0, row2, display.width(), 54, GxEPD_BLACK);
   // display.displayWindow(0, row2, display.width(), 54);

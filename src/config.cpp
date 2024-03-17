@@ -92,6 +92,7 @@ void setupWifi()
 
   WiFiManager wm;
 
+  #ifndef ARDUINO_ORANGECLOCK
   // Touch pin 14 to reset
   if (touchRead(14) > 9000)
   {
@@ -108,6 +109,7 @@ void setupWifi()
       wm.resetSettings();
     }
   }
+  #endif
 
   String softAP_SSID =
       String("OrangeBTClock");

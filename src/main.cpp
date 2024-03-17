@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include "webserver.hpp"
 #include <data.hpp>
+#include <FastLED.h>
 
 #define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
 #define TIME_TO_SLEEP 5        /* Time ESP32 will go to sleep (in seconds) */
@@ -21,6 +22,10 @@ GxEPD2_BW<EPD_CLASS, EPD_CLASS::HEIGHT> display = EPD_CLASS(4, 2, 3, 1);
 GxEPD2_BW<EPD_CLASS, EPD_CLASS::HEIGHT> display = EPD_CLASS(5, 3, 2, 1);
 #endif
 
+#ifdef ARDUINO_ORANGECLOCK
+GxEPD2_BW<EPD_CLASS, EPD_CLASS::HEIGHT> display = EPD_CLASS(5, 3, 1, 2);
+#endif
+
 typedef void (*MethodPtr)(String, char);
 
 MethodPtr methods[] = {nullptr, updateRow1, updateRow2, updateRow3};
@@ -30,14 +35,25 @@ uint currentPrice = 0;
 String currentBlock = "";
 String currentFees = "";
 
+#define NUM_LEDS 2
+CRGB leds[NUM_LEDS];
+
 void setup()
 {
   //  setCpuFrequencyMhz(40);
   Serial.begin(115200);
 
+  #ifndef IS_ORANGECLOCK
   pinMode(LED_BUILTIN, OUTPUT);
 
   digitalWrite(LED_BUILTIN, HIGH);
+  #else
+  FastLED.addLeds<WS2812B, 48, GRB>(leds, NUM_LEDS);
+  leds[0] = CRGB::DarkOrange;
+  leds[1] = CRGB::OrangeRed;
+
+  FastLED.show();
+  #endif
 
   setupPreferences();
   setupDisplay();
@@ -52,7 +68,20 @@ void setup()
   }
   client.setInsecure();
 
+  #ifndef IS_ORANGECLOCK
   digitalWrite(LED_BUILTIN, LOW);
+  #else
+  leds[0] = CRGB::Black;
+  leds[1] = CRGB::Black;
+
+  FastLED.show();
+  delay(100);
+
+  display.setFullWindow();
+  display.clearScreen(GxEPD_WHITE);
+  display.display(true);
+
+  #endif
 }
 
 void loop()
