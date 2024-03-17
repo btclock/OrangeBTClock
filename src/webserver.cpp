@@ -13,6 +13,7 @@ void setupWebserver()
     Serial.println(F("An Error has occurred while mounting LittleFS"));
   }
 
+  server.on("/api/status", HTTP_GET, onApiStatus);
   server.on("/api/settings", HTTP_GET, onApiSettingsGet);
   AsyncCallbackJsonWebHandler *settingsPatchHandler =
       new AsyncCallbackJsonWebHandler("/api/json/settings", onApiSettingsPatch);
@@ -29,6 +30,31 @@ void setupWebserver()
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "*");
 
   server.begin();
+}
+
+void onApiStatus(AsyncWebServerRequest *request)
+{
+  JsonDocument root;
+
+  root["row1"] = currentRow1;
+  root["row2"] = currentRow2;
+  root["row3"] = currentRow3;
+
+  root["icon1"] = String(currentIcon1);
+  root["icon2"] = String(currentIcon2);
+  root["icon3"] = String(currentIcon3);
+
+  root["espUptime"] = esp_timer_get_time() / 1000000;
+  root["espFreeHeap"] = ESP.getFreeHeap();
+  root["espHeapSize"] = ESP.getHeapSize();
+
+  root["rssi"] = WiFi.RSSI();
+
+  AsyncResponseStream *response =
+      request->beginResponseStream("application/json");
+  serializeJson(root, *response);
+
+  request->send(response);
 }
 
 void onApiSettingsGet(AsyncWebServerRequest *request)
@@ -48,6 +74,17 @@ void onApiSettingsGet(AsyncWebServerRequest *request)
   {
     root[setting] = preferences.getBool(setting.c_str());
   }
+
+  root["hostname"] = getMyHostname();
+  root["ip"] = WiFi.localIP();
+  root["txPower"] = WiFi.getTxPower();
+
+#ifdef GIT_REV
+  root["gitRev"] = String(GIT_REV);
+#endif
+#ifdef LAST_BUILD_TIME
+  root["lastBuildTime"] = String(LAST_BUILD_TIME);
+#endif
 
   AsyncResponseStream *response =
       request->beginResponseStream("application/json");

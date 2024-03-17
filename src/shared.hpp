@@ -37,29 +37,30 @@
  #define SETUPFONT LibreFranklin_SemiBold12pt7b
 #endif
 
-#define ICON_BLOCK "A"
-#define ICON_EURO "B"
-#define ICON_POUND "C"
-#define ICON_YEN "D"
-#define ICON_DOLLAR "E"
-#define ICON_PIE "F"
-#define ICON_GLOBE "G"
-#define ICON_HOURGLASS "H"
-#define ICON_LIGHTNING "I"
-#define ICON_REFRESH "J"
-#define ICON_NUCLEAR "K"
-#define ICON_SATS "L"
-#define ICON_SATUSD "M"
-#define ICON_SETTINGS "N"
-#define ICON_WIFI "O"
-#define ICON_CROSS "P"
-#define ICON_CHECK "Q"
-#define ICON_WARNING "R"
+#define ICON_BLOCK 'A'
+#define ICON_EURO 'B'
+#define ICON_POUND 'C'
+#define ICON_YEN 'D'
+#define ICON_DOLLAR 'E'
+#define ICON_PIE 'F'
+#define ICON_GLOBE 'G'
+#define ICON_HOURGLASS 'H'
+#define ICON_LIGHTNING 'I'
+#define ICON_REFRESH 'J'
+#define ICON_NUCLEAR 'K'
+#define ICON_SATS 'L'
+#define ICON_SATUSD 'M'
+#define ICON_SETTINGS 'N'
+#define ICON_WIFI 'O'
+#define ICON_CROSS 'P'
+#define ICON_CHECK 'Q'
+#define ICON_WARNING 'R'
 
 #define SETTING_ROW1_CONTENT "row1"
 #define SETTING_ROW2_CONTENT "row2"
 #define SETTING_ROW3_CONTENT "row3"
 #define SETTING_CURRENCY "currency"
+#define SETTING_HOSTNAME_PREFIX "hostnamePrefix"
 
 const int LINE_BLOCKHEIGHT = 0;
 const int LINE_MEMPOOL_FEES = 1;
@@ -83,3 +84,13 @@ extern WiFiClientSecure client;
 extern GxEPD2_BW<EPD_CLASS, EPD_CLASS::HEIGHT> display;
 extern Preferences preferences;
 extern bool isUpdating;
+
+extern String currentRow1;
+extern String currentRow2;
+extern String currentRow3;
+
+extern char currentIcon1;
+extern char currentIcon2;
+extern char currentIcon3;
+
+String getMyHostname();

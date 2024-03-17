@@ -9,6 +9,10 @@ String currentRow1 = "";
 String currentRow2 = "";
 String currentRow3 = "";
 
+char currentIcon1;
+char currentIcon2;
+char currentIcon3;
+
 void setupDisplay()
 {
   display.init(0, true);
@@ -60,8 +64,11 @@ void setupDisplay()
   // display.display(true);
 }
 
-void updateRow2(String c)
+void updateRow2(String c, char icon)
 {
+  if (c.equals(currentRow2) && icon == currentIcon2)
+    return;
+
   display.setRotation(1);
   display.setFont(&ROW2_FONT);
   display.setTextColor(GxEPD_BLACK);
@@ -82,17 +89,23 @@ void updateRow2(String c)
 
     display.setFont(&ROW2_ICONFONT);
     display.setCursor(x, y);
-    display.print(ICON_BLOCK);
+    display.print(icon);
 
     display.setFont(&ROW2_FONT);
     display.setCursor(x + ROW2_ICONWIDTH, y);
     display.print(c);
   } while (display.nextPage());
   //  display.display(true);
+
+  currentRow2 = c;
+  currentIcon2 = icon;
 }
 
-void updateRow3(String c)
+void updateRow3(String c, char icon)
 {
+  if (c.equals(currentRow3) && icon == currentIcon3)
+    return;
+
   display.setRotation(1);
   display.setFont(&LibreFranklin_SemiBold15pt7b);
   display.setTextColor(GxEPD_WHITE);
@@ -114,13 +127,16 @@ void updateRow3(String c)
 
     display.setFont(&orangeclock_icons15pt7b);
     display.setCursor(x, y);
-    display.print(ICON_SATS);
+    display.print(icon);
 
     display.setFont(&LibreFranklin_SemiBold15pt7b);
 
     display.setCursor(x + ROW3_ICONWIDTH, y);
     display.print(c);
   } while (display.nextPage());
+
+  currentRow3 = c;
+  currentIcon3 = icon;
 }
 
 void showSetupText(String t)
@@ -133,7 +149,7 @@ void showSetupText(String t)
   // center the bounding box by transposition of the origin:
   uint16_t x = ((display.width() - (tbw)) / 2) - tbx;
   uint16_t y = ((display.height() - tbh) / 2) - tby;
-
+  display.setFullWindow();
   display.firstPage();
   do
   {
@@ -147,8 +163,11 @@ void showSetupText(String t)
   } while (display.nextPage());
 }
 
-void updateRow1(String c)
+void updateRow1(String c, char icon)
 {
+  if (c.equals(currentRow1) && icon == currentIcon1)
+    return;
+
   // struct tm timeinfo;
   // if (!getLocalTime(&timeinfo))
   // {
@@ -180,13 +199,16 @@ void updateRow1(String c)
 
     display.setFont(&ROW1_ICONFONT);
     display.setCursor(x, y);
-    display.print(ICON_PIE);
+    display.print(icon);
 
     display.setFont(&ROW1_FONT);
 
     display.setCursor(x + ROW1_ICONWIDTH, y);
     display.print(c);
   } while (display.nextPage());
+
+  currentRow1 = c;
+  currentIcon1 = icon;
 }
 
 void updateRows(String row1Content, String row2Content, String row3Content)

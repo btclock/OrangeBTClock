@@ -38,6 +38,11 @@ void setupPreferences()
   {
     preferences.putString(SETTING_CURRENCY, CURRENCY_USD);
   }
+
+  if (!preferences.isKey(SETTING_HOSTNAME_PREFIX))
+  {
+    preferences.putString(SETTING_HOSTNAME_PREFIX, "oc");
+  }
 }
 
 void setupWifi()
@@ -221,3 +226,4 @@ void OTAUpdateTask(void *pvParameters) {
     vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay to avoid high CPU usage
   }
 }
+

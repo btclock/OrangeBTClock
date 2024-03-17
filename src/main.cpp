@@ -21,7 +21,7 @@ GxEPD2_BW<EPD_CLASS, EPD_CLASS::HEIGHT> display = EPD_CLASS(4, 2, 3, 1);
 GxEPD2_BW<EPD_CLASS, EPD_CLASS::HEIGHT> display = EPD_CLASS(5, 3, 2, 1);
 #endif
 
-typedef void (*MethodPtr)(String);
+typedef void (*MethodPtr)(String, char);
 
 MethodPtr methods[] = {nullptr, updateRow1, updateRow2, updateRow3};
 
@@ -96,35 +96,40 @@ void loop()
   for (uint i = 1; i <= 3; i++)
   {
     String rowContent = "";
+    char icon;
     char keyName[5];
     snprintf(keyName, sizeof(keyName), "row%d", i);
-    Serial.print(keyName);
-    Serial.print(" ");
-    Serial.println(preferences.getUInt(keyName));
     switch (preferences.getUInt(keyName))
     {
     case LINE_BLOCKHEIGHT:
+      icon = ICON_BLOCK;
       rowContent = getBlock();
       break;
     case LINE_MEMPOOL_FEES:
+      icon = ICON_PIE;
       rowContent = getMempoolFees();
       break;
     case LINE_MEMPOOL_FEES_MEDIAN:
+      icon = ICON_PIE;
       rowContent = "NOT IMPL";
       break;
     case LINE_HALVING_COUNTDOWN:
+      icon = ICON_HOURGLASS;
       rowContent = "NOT IMPL";
       break;
     case LINE_SATSPERUNIT:
     {
+      icon = ICON_SATS;
       uint satsPerDollar = int(round(1 / float(getPrice()) * 10e7));
       rowContent = satsPerDollar;
       break;
     }
     case LINE_FIATPRICE:
+      icon = ICON_DOLLAR;
       rowContent = getPrice();
       break;
     case LINE_MARKETCAP:
+      icon = ICON_GLOBE;
       rowContent = "NOT IMPL";
       break;
     case LINE_TIME:
@@ -137,7 +142,7 @@ void loop()
       rowContent = "DEFAULT";
     }
 
-    methods[i](rowContent);
+    methods[i](rowContent, icon);
   }
 
   // String block = String(getBlock());

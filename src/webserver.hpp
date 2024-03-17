@@ -9,6 +9,8 @@
 
 void setupWebserver();
 
+void onApiStatus(AsyncWebServerRequest *request);
+
 void onApiSettingsGet(AsyncWebServerRequest *request);
 void onApiSettingsPatch(AsyncWebServerRequest *request, JsonVariant &json);
 
