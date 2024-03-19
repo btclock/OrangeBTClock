@@ -43,17 +43,17 @@ void setup()
   //  setCpuFrequencyMhz(40);
   Serial.begin(115200);
 
-  #ifndef IS_ORANGECLOCK
+  //#ifndef IS_ORANGECLOCK
   pinMode(LED_BUILTIN, OUTPUT);
 
   digitalWrite(LED_BUILTIN, HIGH);
-  #else
-  FastLED.addLeds<WS2812B, 48, GRB>(leds, NUM_LEDS);
+  //#else
+  FastLED.addLeds<WS2812B, 12, GRB>(leds, NUM_LEDS);
   leds[0] = CRGB::DarkOrange;
   leds[1] = CRGB::OrangeRed;
 
   FastLED.show();
-  #endif
+  //#endif
 
   setupPreferences();
   setupDisplay();
@@ -76,12 +76,10 @@ void setup()
 
   FastLED.show();
   delay(100);
-
+  #endif
   display.setFullWindow();
   display.clearScreen(GxEPD_WHITE);
   display.display(true);
-
-  #endif
 }
 
 void loop()

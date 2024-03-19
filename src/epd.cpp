@@ -30,7 +30,13 @@ void setupDisplay()
   uint16_t y = ((display.height() - tbh) / 2) - tby;
   display.fillScreen(GxEPD_BLACK);
   display.setCursor(x, y);
-  display.print("OrangeBTClock");
+//  display.print("OrangeBTClock");
+
+//  display.drawImage(epd_bitmap_allArray[0], GxEPD_WHITE, 0,0 250,37);
+
+  int xPos = (display.width() - 250) / 2;
+  int yPos = (display.height()  - 37) / 2;
+  display.drawBitmap(xPos,yPos, epd_bitmap_oclogo, 250, 37, GxEPD_WHITE);
   display.display(false);
 
   // display.fillScreen(GxEPD_WHITE);
@@ -47,11 +53,11 @@ void setupDisplay()
 
   // display.display(true);
 
-  display.setRotation(1);
-  //  display.fillRect(0, row1, display.width(), 54, GxEPD_BLACK);
-  display.displayWindow(0, row1, display.width(), row2);
+  // display.setRotation(1);
+  // //  display.fillRect(0, row1, display.width(), 54, GxEPD_BLACK);
+  // display.displayWindow(0, row1, display.width(), row2);
 
-  display.display(false);
+  // display.display(false);
 
   // display.fillRect(0, row2, display.width(), 54, GxEPD_BLACK);
   // display.displayWindow(0, row2, display.width(), 54);

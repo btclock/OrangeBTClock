@@ -2,7 +2,7 @@
 
 #include "shared.hpp"
 #include "fonts/fonts.hpp"
-
+#include "bitmap.hpp"
 void setupDisplay();
 
 void showSetupText(String t);
