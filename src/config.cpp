@@ -6,6 +6,9 @@ const char *ntpServer = "pool.ntp.org";
 // const long gmtOffset_sec = 0;
 const int daylightOffset_sec = 3600;
 TaskHandle_t OTAHandle = NULL;
+SemaphoreHandle_t xButtonSemaphore = NULL;
+const TickType_t debounceDelay = pdMS_TO_TICKS(500);
+TickType_t lastButtonPressTime = 0;
 
 #define STA_SSID ""
 #define STA_PASS ""
@@ -92,7 +95,7 @@ void setupWifi()
 
   WiFiManager wm;
 
-  #ifndef ARDUINO_ORANGECLOCK
+#ifndef ARDUINO_ORANGECLOCK
   // Touch pin 14 to reset
   if (touchRead(14) > 9000)
   {
@@ -109,7 +112,7 @@ void setupWifi()
       wm.resetSettings();
     }
   }
-  #endif
+#endif
 
   String softAP_SSID =
       String("OrangeBTClock");
@@ -264,6 +267,42 @@ void OTAUpdateTask(void *pvParameters)
   }
 }
 
+void HandleButtonTask(void *pvParameters)
+{
+  for (;;)
+  {
+    if (xSemaphoreTake(xButtonSemaphore, portMAX_DELAY) == pdTRUE)
+    {
+      TickType_t currentTime = xTaskGetTickCount();
+      if ((currentTime - lastButtonPressTime) >= debounceDelay)
+      {
+        lastButtonPressTime = currentTime;
+
+        Serial.println("Button Pressed");
+        
+        leds[0] = CRGB::SkyBlue;
+        leds[1] = CRGB::Black;
+
+        FastLED.show();
+
+        vTaskDelay(100);
+
+        leds[0] = CRGB::Black;
+        leds[1] = CRGB::DarkOrange;
+
+        FastLED.show();
+
+        vTaskDelay(100);
+
+        leds[0] = CRGB::Black;
+        leds[1] = CRGB::Black;
+
+        FastLED.show();
+      }
+    }
+  }
+}
+
 char getCurrencyIcon()
 {
   char ret;
@@ -286,4 +325,23 @@ char getCurrencyIcon()
   }
 
   return ret;
+}
+
+void IRAM_ATTR onButtonPress()
+{
+  xSemaphoreGiveFromISR(xButtonSemaphore, NULL);
+}
+
+void setupButtonISR()
+{
+  xButtonSemaphore = xSemaphoreCreateBinary();
+
+  xTaskCreatePinnedToCore(
+      HandleButtonTask, // Task function
+      "Button Task",    // Task name
+      2048,             // Stack size (bytes)
+      NULL,             // Task parameters
+      1,                // Priority (1 is default)
+      NULL,             // Task handle
+      0);               // Core to run the task (0 or 1)
 }

@@ -8,7 +8,6 @@
 #include "config.hpp"
 #include "webserver.hpp"
 #include <data.hpp>
-#include <FastLED.h>
 
 #define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
 #define TIME_TO_SLEEP 5        /* Time ESP32 will go to sleep (in seconds) */
@@ -35,25 +34,31 @@ uint currentPrice = 0;
 String currentBlock = "";
 String currentFees = "";
 
-#define NUM_LEDS 2
 CRGB leds[NUM_LEDS];
 
 void setup()
 {
   //  setCpuFrequencyMhz(40);
   Serial.begin(115200);
-
-  //#ifndef IS_ORANGECLOCK
+  delay(2500);
+  Serial.println("Hello");
+  #ifndef IS_ORANGECLOCK
   pinMode(LED_BUILTIN, OUTPUT);
 
   digitalWrite(LED_BUILTIN, HIGH);
-  //#else
-  FastLED.addLeds<WS2812B, 12, GRB>(leds, NUM_LEDS);
-  leds[0] = CRGB::DarkOrange;
+  #else
+
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  attachInterrupt(BUTTON_PIN, onButtonPress, FALLING);
+
+  FastLED.addLeds<WS2812B, 48, GRB>(leds, NUM_LEDS);
+  leds[0] = CRGB::GreenYellow;
   leds[1] = CRGB::OrangeRed;
 
   FastLED.show();
-  //#endif
+
+  setupButtonISR();
+  #endif
 
   setupPreferences();
   setupDisplay();
@@ -102,24 +107,24 @@ void loop()
 
   //
 
-  IPAddress res;
-  uint result = WiFi.hostByName("mempool.space", res);
+  // IPAddress res;
+  // uint result = WiFi.hostByName("mempool.space", res);
 
-  if (result >= 0)
-  {
-    Serial.print("SUCCESS!");
-    Serial.println(res.toString());
-  }
-  else
-  {
-    WiFi.reconnect();
+  // if (result >= 0)
+  // {
+  //   Serial.print("SUCCESS!");
+  //   Serial.println(res.toString());
+  // }
+  // else
+  // {
+  //   WiFi.reconnect();
 
-    while (WiFi.status() != WL_CONNECTED)
-    {
-      Serial.print('.');
-      delay(1000);
-    }
-  }
+  //   while (WiFi.status() != WL_CONNECTED)
+  //   {
+  //     Serial.print('.');
+  //     delay(1000);
+  //   }
+  // }
 
   for (uint i = 1; i <= 3; i++)
   {

@@ -22,3 +22,5 @@ void setModemSleep();
 
 bool inPowerSaveMode();
 char getCurrencyIcon();
+void IRAM_ATTR onButtonPress();
+void setupButtonISR();

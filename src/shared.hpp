@@ -7,6 +7,9 @@
 #include <GxEPD2_BW.h>
 #include "utils.hpp"
 #include "fonts/fonts.hpp"
+#include <FastLED.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 #ifdef VERSION_EPD_2_13
   #define EPD_CLASS GxEPD2_213_B74
@@ -101,3 +104,5 @@ extern char currentIcon1;
 extern char currentIcon2;
 extern char currentIcon3;
 
+extern CRGB leds[NUM_LEDS];
+extern volatile bool buttonPressed;
