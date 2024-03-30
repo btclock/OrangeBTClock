@@ -34,7 +34,9 @@ uint currentPrice = 0;
 String currentBlock = "";
 String currentFees = "";
 
+#ifdef NUM_LEDS
 CRGB leds[NUM_LEDS];
+#endif
 
 void setup()
 {

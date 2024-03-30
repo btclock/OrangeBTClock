@@ -280,6 +280,7 @@ void HandleButtonTask(void *pvParameters)
 
         Serial.println("Button Pressed");
         
+        #ifdef NUM_LEDS
         leds[0] = CRGB::SkyBlue;
         leds[1] = CRGB::Black;
 
@@ -298,6 +299,7 @@ void HandleButtonTask(void *pvParameters)
         leds[1] = CRGB::Black;
 
         FastLED.show();
+        #endif
       }
     }
   }

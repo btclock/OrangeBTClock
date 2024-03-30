@@ -104,5 +104,7 @@ extern char currentIcon1;
 extern char currentIcon2;
 extern char currentIcon3;
 
+#ifdef NUM_LEDS
 extern CRGB leds[NUM_LEDS];
+#endif
 extern volatile bool buttonPressed;
