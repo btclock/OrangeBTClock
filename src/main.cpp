@@ -42,8 +42,6 @@ void setup()
 {
   //  setCpuFrequencyMhz(40);
   Serial.begin(115200);
-  delay(2500);
-  Serial.println("Hello");
   #ifndef IS_ORANGECLOCK
   pinMode(LED_BUILTIN, OUTPUT);
 

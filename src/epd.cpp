@@ -22,14 +22,14 @@ void setupDisplay()
   display.setRotation(1);
   display.setFont(&Antonio_SemiBold20pt7b);
   display.setTextColor(GxEPD_WHITE);
-  int16_t tbx, tby;
-  uint16_t tbw, tbh;
-  display.getTextBounds("OrangeBTClock", 0, 0, &tbx, &tby, &tbw, &tbh);
-  // center the bounding box by transposition of the origin:
-  uint16_t x = ((display.width() - tbw) / 2) - tbx;
-  uint16_t y = ((display.height() - tbh) / 2) - tby;
+  // int16_t tbx, tby;
+  // uint16_t tbw, tbh;
+  // display.getTextBounds("OrangeBTClock", 0, 0, &tbx, &tby, &tbw, &tbh);
+  // // center the bounding box by transposition of the origin:
+  // uint16_t x = ((display.width() - tbw) / 2) - tbx;
+  // uint16_t y = ((display.height() - tbh) / 2) - tby;
   display.fillScreen(GxEPD_BLACK);
-  display.setCursor(x, y);
+  // display.setCursor(x, y);
 //  display.print("OrangeBTClock");
 
 //  display.drawImage(epd_bitmap_allArray[0], GxEPD_WHITE, 0,0 250,37);
@@ -38,6 +38,9 @@ void setupDisplay()
   int yPos = (display.height()  - 37) / 2;
   display.drawBitmap(xPos,yPos, epd_bitmap_oclogo, 250, 37, GxEPD_WHITE);
   display.display(false);
+
+  display.setCursor(0, 37);
+
 
   // display.fillScreen(GxEPD_WHITE);
   // display.drawLine(0, 10, display.width(), 10, GxEPD_BLACK);
@@ -68,6 +71,22 @@ void setupDisplay()
   // display.displayWindow(0, row3, display.width(), display.height());
 
   // display.display(true);
+}
+
+void epdShowIp() {
+  display.setRotation(1);
+  display.setFont(&LibreFranklin_SemiBold10pt7b);
+  display.setTextColor(GxEPD_WHITE);
+  String ipStr = WiFi.localIP().toString();
+  int16_t tbx, tby;
+  uint16_t tbw, tbh;
+  display.getTextBounds(ipStr, 0, 0, &tbx, &tby, &tbw, &tbh);
+  // center the bounding box by transposition of the origin:
+  uint16_t x = ((display.width() - tbw) / 2) - tbx;
+  uint16_t y = ((display.height() - tbh) / 2) - tby + 37;
+  display.setCursor(x, y);
+  display.println(WiFi.localIP());
+  display.display(true);
 }
 
 void updateRow2(String c, char icon)

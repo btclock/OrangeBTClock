@@ -10,6 +10,7 @@
 #include <FastLED.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#include <WiFi.h>
 
 #ifdef VERSION_EPD_2_13
   #define EPD_CLASS GxEPD2_213_B74

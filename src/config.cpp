@@ -154,6 +154,7 @@ void setupWifi()
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+  epdShowIp();
   // WiFi.setTxPower(WIFI_POWER_8_5dBm);
   //  enableWiFi();
 }
